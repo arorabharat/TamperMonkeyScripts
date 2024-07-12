@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name         CodeSearchEnhancer
+// @name         AmazonPay
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @descriptionription  This Script will enable package exclude filter
+// @version      2024-07-12
+// @description  try to take over the world!
 // @author       You
-// @match        https://code.amazon.com/search*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=amazon.com
+// @match        https://www.amazon.in/pay/history*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=amazon.in
 // @grant        none
 // ==/UserScript==
 
@@ -60,13 +60,36 @@ class Transaction {
         return this.description.toLowerCase().includes('piped gas payment');
     }
 
+    isUberOnHoldTransaction() {
+        return this.description.toLowerCase().includes('on-hold for uber india');
+    }
+
+    isUberReleasedTransaction() {
+        return this.description.toLowerCase().includes('released from uber india');
+    }
+
+    isCreditCardBillPaymentTransaction() {
+        return this.description.toLowerCase().includes('credit card bill payment');
+    }
+
+    isAmazonPayRewardTransaction() {
+        return this.description.toLowerCase().includes('rewards earned for last billing cycle');
+    }
+
+    isMobileRechargeTransaction() {
+        return this.description.toLowerCase().includes('mobile prepaid recharge');
+    }
+
+    bypassFilter() {
+        return true;
+    }
 
 }
 
 (function () {
     'use strict';
 
-    let scriptExecutionDelay = 3000; // ensure the page is fully loaded after this time
+    let scriptExecutionDelay = 30000; // ensure the page is fully loaded after this time
 
     setTimeout(function () {
 
@@ -140,6 +163,7 @@ class Transaction {
             filteredTransactions.forEach(transaction => {
                 transaction.print();
             });
+            console.log("====================================================================");
         }
 
         console.log("Cashback Transactions: ");
@@ -172,6 +196,35 @@ class Transaction {
         console.log("Electricity bill payment Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isElectricityTransaction());
 
+        console.log("Credit card bill payment Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isCreditCardBillPaymentTransaction() && !transaction.isCashback());
+
+        console.log("Amazon Pay reward Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isAmazonPayRewardTransaction());
+
+        console.log("Mobile prepaid recharge Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isMobileRechargeTransaction());
+
+        let newTypeOfTransactions = transactions
+            .filter(transaction => !transaction.isCashback())
+            .filter(transaction => !transaction.isSmartqTransaction())
+            .filter(transaction => !transaction.isSwiggyTransaction())
+            .filter(transaction => !transaction.isZomatoTransaction())
+            .filter(transaction => !transaction.isBlinkitTransaction())
+            .filter(transaction => !transaction.isSmartqTransaction())
+            .filter(transaction => !transaction.isUberTransaction())
+            .filter(transaction => !transaction.isRefundTransaction())
+            .filter(transaction => !transaction.isGiftCardTransaction())
+            .filter(transaction => !transaction.isPipedGasTransaction())
+            .filter(transaction => !transaction.isElectricityTransaction())
+            .filter(transaction => !transaction.isCreditCardBillPaymentTransaction())
+            .filter(transaction => !transaction.isUberReleasedTransaction())
+            .filter(transaction => !transaction.isUberOnHoldTransaction())
+            .filter(transaction => !transaction.isAmazonPayRewardTransaction())
+            .filter(transaction => !transaction.isMobileRechargeTransaction());
+
+        console.log("Remaining Transactions: ");
+        printTransactionSummary(newTypeOfTransactions, transaction => transaction.bypassFilter());
 
     }, scriptExecutionDelay);
 })();
