@@ -129,6 +129,10 @@ class Transaction {
         return this.description.toLowerCase().includes('mobile prepaid recharge');
     }
 
+    isICICIRewardRechargeTransaction() {
+        return this.description.toLowerCase().includes('amazon pay icici bank credit card: rewards earned for last billing cycle');
+    }
+
     bypassFilter() {
         return true;
     }
@@ -266,6 +270,8 @@ class Transaction {
 
         printTransactionSummary("Insurance premium Transactions: ", transactions, transaction => transaction.isInsurancePremiumTransaction());
 
+        printTransactionSummary("ICICI Reward Transactions: ", transactions, transaction => transaction.isICICIRewardRechargeTransaction());
+
         let newTypeOfTransactions = transactions
             .filter(transaction => !transaction.isCashback())
             .filter(transaction => !transaction.isSmartqTransaction())
@@ -293,6 +299,7 @@ class Transaction {
             .filter(transaction => !transaction.isElectricityTransaction())
             .filter(transaction => !transaction.isCreditCardBillPaymentTransaction())
             .filter(transaction => !transaction.isAmazonPayRewardTransaction())
+            .filter(transaction => !transaction.isICICIRewardRechargeTransaction())
             .filter(transaction => !transaction.isMobileRechargeTransaction());
 
         printTransactionSummary("Remaining Transactions: ", newTypeOfTransactions, transaction => transaction.bypassFilter());
