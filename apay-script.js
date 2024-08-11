@@ -85,12 +85,24 @@ class Transaction {
         return this.description.toLowerCase().includes('paid on smartq');
     }
 
+    isAmazonVendingTransaction() {
+        return this.description.toLowerCase().includes('paid on mobivend logistics solutions private limited');
+    }
+
     isRefundTransaction() {
         return this.description.toLowerCase().includes('refund');
     }
 
     isGiftCardTransaction() {
         return this.description.toLowerCase().includes('added amazon pay gift card');
+    }
+
+    isAutoReloadTransaction() {
+        return this.description.toLowerCase().includes('auto reload set up');
+    }
+
+    isWalletReloadTransaction() {
+        return this.description.toLowerCase().includes('added money');
     }
 
     isElectricityTransaction() {
@@ -106,7 +118,7 @@ class Transaction {
     }
 
     isAmazonPayRewardTransaction() {
-        return this.description.toLowerCase().includes('rewards earned for last billing cycle');
+        return this.description.toLowerCase().includes('Paid on MOBIVEND LOGISTICS SOLUTIONS PRIVATE LIMITED');
     }
 
     isMobileRechargeTransaction() {
@@ -217,6 +229,9 @@ class Transaction {
         console.log("SmartQ Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isSmartqTransaction());
 
+        console.log("Amazon vending machine Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isAmazonVendingTransaction());
+
         console.log("Instamart Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isInstamartTransaction());
 
@@ -244,6 +259,12 @@ class Transaction {
         console.log("Gift card Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isGiftCardTransaction());
 
+        console.log("Wallet reload Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isWalletReloadTransaction());
+
+        console.log("Auto reload Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isAutoReloadTransaction());
+
         console.log("Piped Gas Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isPipedGasTransaction());
 
@@ -262,6 +283,7 @@ class Transaction {
         let newTypeOfTransactions = transactions
             .filter(transaction => !transaction.isCashback())
             .filter(transaction => !transaction.isSmartqTransaction())
+            .filter(transaction => !transaction.isAmazonVendingTransaction())
             .filter(transaction => !transaction.isSwiggyTransaction())
             .filter(transaction => !transaction.isInstamartTransaction())
             .filter(transaction => !transaction.isZomatoTransaction())
@@ -278,6 +300,8 @@ class Transaction {
             .filter(transaction => !transaction.isRapidoTransaction())
             .filter(transaction => !transaction.isRefundTransaction())
             .filter(transaction => !transaction.isGiftCardTransaction())
+            .filter(transaction => !transaction.isWalletReloadTransaction())
+            .filter(transaction => !transaction.isAutoReloadTransaction())
             .filter(transaction => !transaction.isPipedGasTransaction())
             .filter(transaction => !transaction.isElectricityTransaction())
             .filter(transaction => !transaction.isCreditCardBillPaymentTransaction())
