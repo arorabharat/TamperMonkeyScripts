@@ -32,12 +32,53 @@ class Transaction {
         return this.description.toLowerCase().includes('paid on zomato limited');
     }
 
+    isZomatoDiningTransaction() {
+        return this.description.toLowerCase().includes('paid on zomato dining');
+    }
+
     isSwiggyTransaction() {
-        return this.description.toLowerCase().includes('paid on swiggy');
+        return this.description.toLowerCase().includes('paid on swiggy')
+            && !this.isInstamartTransaction();
+    }
+
+    isInstamartTransaction() {
+        return this.description.toLowerCase().includes('paid on swiggy business');
     }
 
     isUberTransaction() {
         return this.description.toLowerCase().includes('paid on uber india');
+    }
+
+    isUberReleasedTransaction() {
+        return this.description.toLowerCase().includes('released from uber india');
+    }
+
+    isUberOnHoldTransaction() {
+        return this.description.toLowerCase().includes('on-hold for uber india');
+    }
+
+    isRapidoTransaction() {
+        return this.description.toLowerCase().includes('paid on rapido bikes');
+    }
+
+    isQuickRideTransaction() {
+        return this.description.toLowerCase().includes('paid on quickride');
+    }
+
+    isApolloPharmacyTransaction() {
+        return this.description.toLowerCase().includes('paid on apollo 24|7 pharmacy');
+    }
+
+    isOlaTransaction() {
+        return this.description.toLowerCase().includes('paid on ola cabs');
+    }
+
+    isOlaReleaseTransaction() {
+        return this.description.toLowerCase().includes('released from ola cabs');
+    }
+
+    isOlaOnHoldTransaction() {
+        return this.description.toLowerCase().includes('on-hold for ola cabs');
     }
 
     isSmartqTransaction() {
@@ -58,14 +99,6 @@ class Transaction {
 
     isPipedGasTransaction() {
         return this.description.toLowerCase().includes('piped gas payment');
-    }
-
-    isUberOnHoldTransaction() {
-        return this.description.toLowerCase().includes('on-hold for uber india');
-    }
-
-    isUberReleasedTransaction() {
-        return this.description.toLowerCase().includes('released from uber india');
     }
 
     isCreditCardBillPaymentTransaction() {
@@ -89,7 +122,7 @@ class Transaction {
 (function () {
     'use strict';
 
-    let scriptExecutionDelay = 30000; // ensure the page is fully loaded after this time
+    let scriptExecutionDelay = 60000; // ensure the page is fully loaded after this time
 
     setTimeout(function () {
 
@@ -148,9 +181,12 @@ class Transaction {
             let transactionAmountElement = extractAmountFromTransaction(transactionElement);
             let transactionDateTimeElement = extractDateFromTransaction(transactionElement)
             let transactionDescriptionElement = extractDescriptionFromTransaction(transactionElement);
-
-            let dateAsString = transactionDateTimeElement.innerText;
+            if (transactionAmountElement === null) {
+                console.log(transactionElement);
+                continue;
+            }
             let amountAsString = transactionAmountElement.innerText;
+            let dateAsString = transactionDateTimeElement.innerText;
             let description = transactionDescriptionElement.innerText;
             let transaction = new Transaction(dateAsString, description, amountAsString);
             transactions.push(transaction);
@@ -169,20 +205,38 @@ class Transaction {
         console.log("Cashback Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isCashback());
 
+        console.log("Amazon Pay reward Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isAmazonPayRewardTransaction());
+
         console.log("Swiggy Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isSwiggyTransaction());
 
         console.log("Zomato Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isZomatoTransaction());
 
-        console.log("Blinkit Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isBlinkitTransaction());
-
         console.log("SmartQ Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isSmartqTransaction());
 
+        console.log("Instamart Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isInstamartTransaction());
+
+        console.log("Blinkit Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isBlinkitTransaction());
+
         console.log("Uber Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isUberTransaction());
+
+        console.log("Ola Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isOlaTransaction());
+
+        console.log("Rapido Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isRapidoTransaction());
+
+        console.log("QuickRide Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isQuickRideTransaction());
+
+        console.log("Zomato Dining Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isZomatoDiningTransaction());
 
         console.log("Refund Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isRefundTransaction());
@@ -199,27 +253,34 @@ class Transaction {
         console.log("Credit card bill payment Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isCreditCardBillPaymentTransaction() && !transaction.isCashback());
 
-        console.log("Amazon Pay reward Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isAmazonPayRewardTransaction());
-
         console.log("Mobile prepaid recharge Transactions: ");
         printTransactionSummary(transactions, transaction => transaction.isMobileRechargeTransaction());
+
+        console.log("Apollo Pharmacy Transactions: ");
+        printTransactionSummary(transactions, transaction => transaction.isApolloPharmacyTransaction());
 
         let newTypeOfTransactions = transactions
             .filter(transaction => !transaction.isCashback())
             .filter(transaction => !transaction.isSmartqTransaction())
             .filter(transaction => !transaction.isSwiggyTransaction())
+            .filter(transaction => !transaction.isInstamartTransaction())
             .filter(transaction => !transaction.isZomatoTransaction())
+            .filter(transaction => !transaction.isZomatoDiningTransaction())
             .filter(transaction => !transaction.isBlinkitTransaction())
-            .filter(transaction => !transaction.isSmartqTransaction())
             .filter(transaction => !transaction.isUberTransaction())
+            .filter(transaction => !transaction.isUberReleasedTransaction())
+            .filter(transaction => !transaction.isUberOnHoldTransaction())
+            .filter(transaction => !transaction.isOlaTransaction())
+            .filter(transaction => !transaction.isOlaReleaseTransaction())
+            .filter(transaction => !transaction.isOlaOnHoldTransaction())
+            .filter(transaction => !transaction.isQuickRideTransaction())
+            .filter(transaction => !transaction.isApolloPharmacyTransaction())
+            .filter(transaction => !transaction.isRapidoTransaction())
             .filter(transaction => !transaction.isRefundTransaction())
             .filter(transaction => !transaction.isGiftCardTransaction())
             .filter(transaction => !transaction.isPipedGasTransaction())
             .filter(transaction => !transaction.isElectricityTransaction())
             .filter(transaction => !transaction.isCreditCardBillPaymentTransaction())
-            .filter(transaction => !transaction.isUberReleasedTransaction())
-            .filter(transaction => !transaction.isUberOnHoldTransaction())
             .filter(transaction => !transaction.isAmazonPayRewardTransaction())
             .filter(transaction => !transaction.isMobileRechargeTransaction());
 
