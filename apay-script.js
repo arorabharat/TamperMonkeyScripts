@@ -69,6 +69,10 @@ class Transaction {
         return this.description.toLowerCase().includes('paid on apollo 24|7 pharmacy');
     }
 
+    isInsurancePremiumTransaction() {
+        return this.description.toLowerCase().includes('insurance premium payment');
+    }
+
     isOlaTransaction() {
         return this.description.toLowerCase().includes('paid on ola cabs');
     }
@@ -204,81 +208,63 @@ class Transaction {
             transactions.push(transaction);
         }
 
-        function printTransactionSummary(transactions, filterCriteria) {
+        function printTransactionSummary(heading, transactions, filterCriteria) {
             let filteredTransactions = transactions.filter(filterCriteria);
-            let totalCashbackAmount = sumAllTransactions(filteredTransactions);
-            console.log("Sum of Transactions: " + totalCashbackAmount);
+            let totalTransactionSumAmount = sumAllTransactions(filteredTransactions);
+            if (totalTransactionSumAmount === 0) return;
+            console.log(heading);
+            console.log("Sum of Transactions: " + totalTransactionSumAmount);
             filteredTransactions.forEach(transaction => {
                 transaction.print();
             });
             console.log("====================================================================");
         }
 
-        console.log("Cashback Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isCashback());
+        printTransactionSummary("Cashback Transactions: ", transactions, transaction => transaction.isCashback());
 
-        console.log("Amazon Pay reward Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isAmazonPayRewardTransaction());
+        printTransactionSummary("Amazon Pay reward Transactions: ", transactions, transaction => transaction.isAmazonPayRewardTransaction());
 
-        console.log("Swiggy Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isSwiggyTransaction());
+        printTransactionSummary("Swiggy Transactions: ", transactions, transaction => transaction.isSwiggyTransaction());
 
-        console.log("Zomato Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isZomatoTransaction());
+        printTransactionSummary("Zomato Transactions: ", transactions, transaction => transaction.isZomatoTransaction());
 
-        console.log("SmartQ Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isSmartqTransaction());
+        printTransactionSummary("SmartQ Transactions: ", transactions, transaction => transaction.isSmartqTransaction());
 
-        console.log("Amazon vending machine Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isAmazonVendingTransaction());
+        printTransactionSummary("Amazon vending machine Transactions: ", transactions, transaction => transaction.isAmazonVendingTransaction());
 
-        console.log("Instamart Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isInstamartTransaction());
+        printTransactionSummary("Instamart Transactions: ", transactions, transaction => transaction.isInstamartTransaction());
 
-        console.log("Blinkit Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isBlinkitTransaction());
+        printTransactionSummary("Blinkit Transactions: ", transactions, transaction => transaction.isBlinkitTransaction());
 
-        console.log("Uber Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isUberTransaction());
+        printTransactionSummary("Uber Transactions: ", transactions, transaction => transaction.isUberTransaction());
 
-        console.log("Ola Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isOlaTransaction());
+        printTransactionSummary("Ola Transactions: ", transactions, transaction => transaction.isOlaTransaction());
 
-        console.log("Rapido Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isRapidoTransaction());
+        printTransactionSummary("Rapido Transactions: ", transactions, transaction => transaction.isRapidoTransaction());
 
-        console.log("QuickRide Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isQuickRideTransaction());
+        printTransactionSummary("QuickRide Transactions: ", transactions, transaction => transaction.isQuickRideTransaction());
 
-        console.log("Zomato Dining Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isZomatoDiningTransaction());
+        printTransactionSummary("Zomato Dining Transactions: ", transactions, transaction => transaction.isZomatoDiningTransaction());
 
-        console.log("Refund Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isRefundTransaction());
+        printTransactionSummary("Refund Transactions: ", transactions, transaction => transaction.isRefundTransaction());
 
-        console.log("Gift card Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isGiftCardTransaction());
+        printTransactionSummary("Gift card Transactions: ", transactions, transaction => transaction.isGiftCardTransaction());
 
-        console.log("Wallet reload Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isWalletReloadTransaction());
+        printTransactionSummary("Wallet reload Transactions: ", transactions, transaction => transaction.isWalletReloadTransaction());
 
-        console.log("Auto reload Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isAutoReloadTransaction());
+        printTransactionSummary("Auto reload Transactions: ", transactions, transaction => transaction.isAutoReloadTransaction());
 
-        console.log("Piped Gas Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isPipedGasTransaction());
+        printTransactionSummary("Piped Gas Transactions: ", transactions, transaction => transaction.isPipedGasTransaction());
 
-        console.log("Electricity bill payment Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isElectricityTransaction());
+        printTransactionSummary("Electricity bill payment Transactions: ", transactions, transaction => transaction.isElectricityTransaction());
 
-        console.log("Credit card bill payment Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isCreditCardBillPaymentTransaction() && !transaction.isCashback());
+        printTransactionSummary("Credit card bill payment Transactions: ", transactions, transaction => transaction.isCreditCardBillPaymentTransaction() && !transaction.isCashback());
 
-        console.log("Mobile prepaid recharge Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isMobileRechargeTransaction());
+        printTransactionSummary("Mobile prepaid recharge Transactions: ", transactions, transaction => transaction.isMobileRechargeTransaction());
 
-        console.log("Apollo Pharmacy Transactions: ");
-        printTransactionSummary(transactions, transaction => transaction.isApolloPharmacyTransaction());
+        printTransactionSummary("Apollo Pharmacy Transactions: ", transactions, transaction => transaction.isApolloPharmacyTransaction());
+
+        printTransactionSummary("Insurance premium Transactions: ", transactions, transaction => transaction.isInsurancePremiumTransaction());
 
         let newTypeOfTransactions = transactions
             .filter(transaction => !transaction.isCashback())
@@ -297,6 +283,7 @@ class Transaction {
             .filter(transaction => !transaction.isOlaOnHoldTransaction())
             .filter(transaction => !transaction.isQuickRideTransaction())
             .filter(transaction => !transaction.isApolloPharmacyTransaction())
+            .filter(transaction => !transaction.isInsurancePremiumTransaction())
             .filter(transaction => !transaction.isRapidoTransaction())
             .filter(transaction => !transaction.isRefundTransaction())
             .filter(transaction => !transaction.isGiftCardTransaction())
@@ -308,8 +295,7 @@ class Transaction {
             .filter(transaction => !transaction.isAmazonPayRewardTransaction())
             .filter(transaction => !transaction.isMobileRechargeTransaction());
 
-        console.log("Remaining Transactions: ");
-        printTransactionSummary(newTypeOfTransactions, transaction => transaction.bypassFilter());
+        printTransactionSummary("Remaining Transactions: ", newTypeOfTransactions, transaction => transaction.bypassFilter());
 
     }, scriptExecutionDelay);
 })();
