@@ -28,10 +28,10 @@
         // Function to convert rating strings to numbers
         function convertRatingToNumber(rating) {
             if (rating.includes('K')) {
-                // Remove 'K', parse as float, and multiply by 1000
-                return parseFloat(rating.replace('K', '')) * 1000;
+                // Remove 'k', parse as float, and multiply by 1000
+                return parseFloat(rating.replace('k', '')) * 1000;
             }
-            // Convert directly to a number if no 'K'
+            // Convert directly to a number if no 'k'
             return parseFloat(rating);
         }
         
