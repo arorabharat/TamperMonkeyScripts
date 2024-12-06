@@ -47,11 +47,16 @@
                     : parseFloat(rawRatingsCount)
                 : 0; // Default to 0 if no ratings count
         
+            // Extract the href from the <a> tag
+            const linkElement = productElement.querySelector('a');
+            const href = linkElement ? linkElement.href : null; // Default to null if no link
+        
             // Build the product object
             const product = {
                 id: productId,
                 productRating: productRating,
                 productRatingsCount: productRatingsCount,
+                href: href,
             };
         
             // Add the product object to the array
