@@ -25,12 +25,22 @@
         // Initialize an array to store numeric ratings
         const ratings = [];
         
+        // Function to convert rating strings to numbers
+        function convertRatingToNumber(rating) {
+            if (rating.includes('K')) {
+                // Remove 'K', parse as float, and multiply by 1000
+                return parseFloat(rating.replace('K', '')) * 1000;
+            }
+            // Convert directly to a number if no 'K'
+            return parseFloat(rating);
+        }
+        
         // Loop through the elements and extract ratings
         for (let i = 0; i < ratingElements.length; i++) {
             // Split innerText by new line and get the second part
             const ratingString = ratingElements[i].innerText.split('\n')[1];
-            // Convert the extracted string to a number
-            const ratingNumber = parseFloat(ratingString);
+            // Convert the rating string to a number
+            const ratingNumber = convertRatingToNumber(ratingString);
             // Add the numeric rating to the array
             ratings.push(ratingNumber);
             // Log the extracted rating to the console
@@ -38,9 +48,9 @@
         }
         
         // Sort the numeric ratings in ascending order
-        ratings.sort((a, b) => b - a);
+        ratings.sort((a, b) => a - b);
         
-        // Optional: Log the sorted array of ratings
+        // Log the sorted array of ratings
         console.log("Sorted Ratings:", ratings);
       
 
