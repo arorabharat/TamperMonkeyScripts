@@ -19,39 +19,43 @@
     setTimeout(function () {
 
         console.log("Script is working ..");
-        // Get all elements with the class name 'product-ratingsCount'
-        const ratingElements = document.getElementsByClassName('product-ratingsCount');
+        const productElements = document.getElementsByClassName('product-base');
+
+        // Initialize an array to store the product details
+        const products = [];
         
-        // Initialize an array to store numeric ratings
-        const ratings = [];
+        // Iterate over each 'product-base' element
+        for (let i = 0; i < productElements.length; i++) {
+            const productElement = productElements[i];
         
-        // Function to convert rating strings to numbers
-        function convertRatingToNumber(rating) {
-            if (rating.includes('k')) {
-                // Remove 'k', parse as float, and multiply by 1000
-                return parseFloat(rating.replace('k', '')) * 1000;
-            }
-            // Convert directly to a number if no 'k'
-            return parseFloat(rating);
+            // Extract the product ID from the 'id' attribute
+            const productId = productElement.id;
+        
+            // Extract the product rating from 'product-ratingsContainer' span
+            const ratingContainer = productElement.querySelector('.product-ratingsContainer span');
+            const productRating = ratingContainer ? parseFloat(ratingContainer.innerText) : null;
+        
+            // Extract the product ratings count from 'product-ratingsCount'
+            const ratingsCountElement = productElement.querySelector('.product-ratingsCount');
+            const rawRatingsCount = ratingsCountElement
+                ? ratingsCountElement.innerText.split('\n')[1]
+                : null;
+            const productRatingsCount = rawRatingsCount
+                ? rawRatingsCount.includes('k')
+                    ? parseFloat(rawRatingsCount.replace('k', '')) * 1000
+                    : parseFloat(rawRatingsCount)
+                : null;
+        
+            // Build the product object
+            const product = {
+                id: productId,
+                productRating: productRating,
+                productRatingsCount: productRatingsCount,
+            };
+        
+            // Add the product object to the array
+            products.push(product);
         }
-        
-        // Loop through the elements and extract ratings
-        for (let i = 0; i < ratingElements.length; i++) {
-            // Split innerText by new line and get the second part
-            const ratingString = ratingElements[i].innerText.split('\n')[1];
-            // Convert the rating string to a number
-            const ratingNumber = convertRatingToNumber(ratingString);
-            // Add the numeric rating to the array
-            ratings.push(ratingNumber);
-            // Log the extracted rating to the console
-            console.log(ratingNumber);
-        }
-        
-        // Sort the numeric ratings in ascending order
-        ratings.sort((a, b) => a - b);
-        
-        // Log the sorted array of ratings
-        console.log("Sorted Ratings:", ratings);
       
 
 
