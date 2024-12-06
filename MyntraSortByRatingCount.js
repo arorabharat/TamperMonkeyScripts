@@ -19,8 +19,9 @@
     setTimeout(function () {
 
         console.log("Script is working ..");
+        // Select all elements with the class name 'product-base'
         const productElements = document.getElementsByClassName('product-base');
-
+        
         // Initialize an array to store the product details
         const products = [];
         
@@ -33,7 +34,7 @@
         
             // Extract the product rating from 'product-ratingsContainer' span
             const ratingContainer = productElement.querySelector('.product-ratingsContainer span');
-            const productRating = ratingContainer ? parseFloat(ratingContainer.innerText) : null;
+            const productRating = ratingContainer ? parseFloat(ratingContainer.innerText) : 0; // Default to 0 if no rating
         
             // Extract the product ratings count from 'product-ratingsCount'
             const ratingsCountElement = productElement.querySelector('.product-ratingsCount');
@@ -44,7 +45,7 @@
                 ? rawRatingsCount.includes('k')
                     ? parseFloat(rawRatingsCount.replace('k', '')) * 1000
                     : parseFloat(rawRatingsCount)
-                : null;
+                : 0; // Default to 0 if no ratings count
         
             // Build the product object
             const product = {
@@ -56,6 +57,12 @@
             // Add the product object to the array
             products.push(product);
         }
+        
+        // Sort the products based on 'productRatingsCount' in descending order
+        products.sort((a, b) => b.productRatingsCount - a.productRatingsCount);
+        
+        // Log the sorted products
+        console.log(products);
       
 
 
